@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0065)http://www.jose-aguilar.com/scripts/jquery/validate-form/demo.php -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<title>Ejemplo jQuery validate con envío en Ajax</title>
+<link rel="stylesheet" type="text/css" media="screen" href="./Ejemplo jQuery validate con envío en Ajax_files/estilos.css">
+<script src="./Ejemplo jQuery validate con envío en Ajax_files/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="./Ejemplo jQuery validate con envío en Ajax_files/jquery.form.js" type="text/javascript"></script>
+<script src="./Ejemplo jQuery validate con envío en Ajax_files/jquery.validate.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+			$("#mensaje").hide();
+			$("#frmContact").validate({
+				event: "blur",rules: {'nombre': "required",'email': "required email",'consulta': "required"},
+				messages: {'nombre': "Por favor indica tu nombre",'email': "Por favor, indica una direcci&oacute;n de e-mail v&aacute;lida",'consulta': "Por favor, dime algo!"},
+				debug: true,errorElement: "label",
+				submitHandler: function(form){
+					$("#mensaje").show();
+					$("#mensaje").html("<img src='ajax-loader.gif' style='vertical-align:middle;margin:0 10px 0 0' /><strong>Enviando mensaje...</strong>");
+					$.ajax({
+						type: "POST",
+						url:"envio.php",
+						contentType: "application/x-www-form-urlencoded",
+						processData: true,
+						data: "nombre="+escape($('#ContactName').val())+"&email="+escape($('#ContactRecipient').val())+"&mensaje="+escape($('#ContactMessage').val()),
+						success: function(msg){
+							$("#mensaje").html("<strong>Mensaje enviado correctamente. En breve recibir&aacute;s mi respuesta. Gracias!</strong>");
+							document.getElementById("ContactName").value="";
+							document.getElementById("ContactRecipient").value="";
+							document.getElementById("ContactMessage").value="";
+							setTimeout(function() {$('#mensaje').fadeOut('fast');}, 3000);
+
+						}
+					});
+				}
+			});
+	});
+</script>
+
+</head>
+<body>
+	<h1>Ejemplo jQuery validate con envío en Ajax y phpmailer</h1>
+	<div id="mensaje" style="display: none;">&nbsp;</div>
+	<form id="frmContact" class="contacto">
+	<fieldset>
+		<legend>Formulario de Contacto</legend>
+		<p>Nombre<input name="nombre" type="text" maxlength="50" value="" id="ContactName" class="valid"><label for="ContactName" generated="true" class="error" style="display: none;">Por favor indica tu nombre</label></p>
+		<p>E-mail<input name="email" type="text" value="" id="ContactRecipient" maxlength="50" class="error"><label for="ContactRecipient" generated="true" class="error">Por favor, indica una dirección de e-mail válida</label></p>
+		<p>Consulta<textarea name="consulta" cols="5" rows="3" id="ContactMessage" class="error"></textarea><label for="ContactMessage" generated="true" class="error">Por favor, dime algo!</label></p>
+		<p>Fecha<input name="fecha" type="text" value="" id="ContactData"></p>
+		<p><input class="submit" type="submit" value="Enviar Formulario"></p>
+	</fieldset>
+	<div style="margin-top:20px; float:left; width:100%;">
+    	<iframe src="./Ejemplo jQuery validate con envío en Ajax_files/like.html" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowtransparency="true"></iframe>
+    </div>
+	</form>
+    
+
+</body></html>
